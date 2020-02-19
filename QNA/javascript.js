@@ -200,7 +200,7 @@ function stateChange(newState) {
 }
 var load = {
   waiting: function() {
-    document.getElementById("title").innerText = "QNA - " + roomname + " - " + username;
+    document.getElementById("title").innerText = "[" + roomname + "] " + username;
     localStorage.setItem("username", username);
     localStorage.setItem("roomname", roomname);
     hide("login");
