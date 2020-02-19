@@ -117,6 +117,12 @@ function update() {
   # EVENT LISTENERS:
 */
 window.addEventListener("load", function() {
+  if (localStorage.getItem("username")) {
+    document.getElementById("usernameInput").value = localStorage.getItem("username");
+  }
+  if (localStorage.getItem("roomname")) {
+    document.getElementById("roomnameInput").value = localStorage.getItem("roomname");
+  }
   document.getElementById("usernameInput").addEventListener("keyup", checkRoom);
   document.getElementById("roomInput").addEventListener("keyup", checkRoom);
   document.getElementById("questionInput").addEventListener("keyup", checkQuestion);
@@ -189,6 +195,8 @@ function stateChange(newState) {
 }
 var load = {
   waiting: function() {
+    localStorage.setItem("username", document.getElementById("usernameInput").value);
+    localStorage.setItem("roomname", document.getElementById("roomnameInput").value);
     hide("login");
     show("waiting");
     document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
