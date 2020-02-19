@@ -151,7 +151,6 @@ function createRoom() {
     username = res.user;
     roomname = res.room;
     room = res.content;
-    hide("login");
     stateChange("waiting");
   });
 }
@@ -162,7 +161,6 @@ function joinRoom() {
     roomname = res.room;
     room = res.content;
     if (res.type === "userJoined") {
-      hide("login");
       stateChange("waiting");
     } else { // User rejoined, change according to state
       hide("login");
@@ -179,11 +177,10 @@ function joinRoom() {
 }
 
 function checkQuestion() {
-  alert("oof");
   if (document.getElementById("questionInput").value !== "") {
-    document.getElementById("submitQuestionButton").disabled = "false";
+    document.getElementById("submitQuestionButton").disabled = false;
   } else {
-    document.getElementById("submitQuestionButton").disabled = "true";
+    document.getElementById("submitQuestionButton").disabled = true;
   }
 }
 
@@ -192,6 +189,7 @@ function stateChange(newState) {
 }
 var load = {
   waiting: function() {
+    hide("login");
     show("waiting");
     document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
     if (username === room.vip) {
@@ -202,6 +200,7 @@ var load = {
     }
   },
   createQuestion: function() {
+    hide("waiting");
     show("createQuestion");
     document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions[username].length + 1}/2):`;
   }
