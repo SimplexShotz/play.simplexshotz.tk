@@ -1,0 +1,95 @@
+
+body {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Nunito";
+  font-weight: 300;
+  color: rgb(50, 50, 50);
+}
+
+h1 {
+  font-weight: 900;
+}
+a {
+  color: rgb(100, 100, 225);
+  text-decoration: none;
+}
+
+#header {
+  background-color: rgb(250, 250, 250);
+  width: calc(100vw - 20px);
+  height: 80px;
+  padding: 10px;
+  text-align: center;
+  font-size: 24pt;
+  line-height: 80px;
+  font-weight: 900;
+}
+
+#content {
+  width: 50vw;
+  padding: 0px 25vw;
+}
+
+.form {
+  padding: 50px;
+  text-align: center;
+}
+.form input {
+  display: block;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  width: calc(100% - 20px - 6px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 3px solid rgb(200, 200, 200);
+  border-radius: 10px 10px 0px 10px;
+  font-size: 16pt;
+  transition: all 0.5s;
+}
+.form input:focus {
+  outline: none;
+  border: 3px solid rgb(100, 100, 225);
+}
+.form button {
+  display: block;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 10px 25px;
+  border: 3px solid rgb(200, 200, 200);
+  border-radius: 10px 10px 0px 10px;
+  font-size: 16pt;
+  margin: auto;
+  transition: all 0.5s;
+}
+.form button:hover {
+  border: 3px solid rgb(100, 100, 225);
+  cursor: pointer;
+}
+.form button:focus {
+  outline: none;
+}
+.form button:disabled {
+  display: block;
+  background-color: rgb(250, 250, 250);
+  color: rgb(150, 150, 150);
+  padding: 10px 25px;
+  border: 3px solid rgb(200, 200, 200);
+  border-radius: 10px 10px 0px 10px;
+  font-size: 16pt;
+  margin: auto;
+  transition: all 0.5s;
+}
+.form button:disabled:hover {
+  cursor: not-allowed;
+}
+.form p {
+  color: rgb(200, 200, 200);
+  font-size: 16pt;
+}
+
+
+
+#waiting, #startRoomForm, #createQuestion {
+  display: none;
+}

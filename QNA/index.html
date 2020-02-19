@@ -4,14 +4,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.6.0/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,300i,700,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="stylesheet.css">
     <title>QNA</title>
   </head>
   <body>
-    <h1>QNA</h1>
-    <input id="username" placeholder="Username">
-    <input id="roomname" placeholder="Room Name">
-    <button id="roomButton" onclick="createRoom()" disabled="true">Join Room</button>
+    <div id="header">
+      <div id="username">QNA</div>
+    </div>
+    <div id="content">
+      <div id="login">
+        <div class="form">
+          <h1>Join/Create Room</h1>
+          <input id="usernameInput" placeholder="Username">
+          <input id="roomInput" placeholder="Room Name">
+          <button id="roomButton" onclick="createRoom()" disabled="true">Join Room</button>
+          <p>Something not working? Contact me at <a href="mailto:brancy280@gmail.com">brancy280@gmail.com</a>.</p>
+        </div>
+      </div>
+      <div id="waiting">
+        <div id="startRoomForm" class="form">
+          <h1 id="playerCount">Waiting for players...</h1>
+          <button id="startRoomButton" onclick="startRoom()" disabled="true">Start Game</button>
+        </div>
+      </div>
+      <div id="createQuestion">
+        <div class="form">
+          <h1 id="questionCount">Enter a Question:</h1>
+          <input id="questionInput" placeholder="Question">
+          <button id="submitQuestionButton" onclick="submit()" disabled="true">Submit</button>
+        </div>
+      </div>
+    </div>
     <script src="javascript.js"></script>
   </body>
 </html>

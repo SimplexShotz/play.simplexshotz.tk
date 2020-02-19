@@ -1,14 +1,22 @@
 
+var username = "";
+var roomname = "";
+var stateChanged = false;
+var room = {};
 
 /* ====================================================================================================================================================================================================
   # SETUP:
 */
 // AJAX Setup:
-function getAjax(url, success) {
+function getAjax(url, success, error) {
   var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
   xhr.open("GET", url);
   xhr.onreadystatechange = function() {
-    if (xhr.readyState > 3 && xhr.status === 200) success(stringToObject(xhr.responseText));
+    if (xhr.readyState > 3 && xhr.status === 200) {
+      success(stringToObject(xhr.responseText));
+    } else if (xhr.readyState > 3) {
+      alert("There was an error.");
+    }
   };
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
   xhr.send();
@@ -35,48 +43,148 @@ var ref = {
   rooms: database.ref("rooms")
 };
 
+ref.rooms.on("value", function(data) {
+  var d = data.val();
+  if (roomname) {
+    stateChanged = false;
+    if (d[roomname].state !== room.state) {
+      stateChanged = true;
+    }
+    room = d[roomname];
+    update();
+  }
+});
+
+function update() {
+  switch(room.state) {
+    case "waiting":
+      document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
+      if (username === room.vip && room.users.length >= 3) {
+        document.getElementById("startRoomButton").disabled = false;
+      }
+      break;
+    case "createQuestion":
+      if (stateChanged) {
+        stateChange("createQuestion");
+      }
+      break;
+  }
+}
+
 
 /* ====================================================================================================================================================================================================
   # EVENT LISTENERS:
 */
 window.addEventListener("load", function() {
-  document.getElementById("roomname").addEventListener("keyup", function() {
-    document.getElementById("roomButton").disabled = true;
-    request({ command: "checkRoom", room: document.getElementById("roomname").value }, function(res) {
-      // Make sure the room is valid:
-      if (document.getElementById("roomname").value === res.content && document.getElementById("roomname").value !== "") {
-        if (res.type === "roomDoesNotExist") { // If the room doesn't exist, set the button to "createRoom"
-          document.getElementById("roomButton").onclick = createRoom;
-          document.getElementById("roomButton").innerText = "Create Room";
-          document.getElementById("roomButton").disabled = false;
-        } else if (res.type === "roomExists") { // If the room does exist, set the button to "joinRoom"
-          document.getElementById("roomButton").onclick = joinRoom;
-          document.getElementById("roomButton").innerText = "Join Room";
-          document.getElementById("roomButton").disabled = false;
-        }
-      } else { // If it's not valid, keep the button disabled:
-        document.getElementById("roomButton").disabled = true;
-      }
-    });
-  });
+  document.getElementById("usernameInput").addEventListener("keyup", checkRoom);
+  document.getElementById("roomInput").addEventListener("keyup", checkRoom);
+  document.getElementById("questionInput").addEventListener("keyup", checkQuestion);
 });
 
 
 /* ====================================================================================================================================================================================================
   # ROOM BUTTON FUNCTIONS:
 */
+function checkRoom() {
+  document.getElementById("roomButton").disabled = true;
+  request({ command: "checkRoom", room: document.getElementById("roomInput").value }, function(res) {
+    // Make sure the room is valid:
+    if (document.getElementById("roomInput").value === res.content && document.getElementById("usernameInput").value !== "" && document.getElementById("roomInput").value !== "") {
+      if (res.type === "roomDoesNotExist") { // If the room doesn't exist, set the button to "createRoom"
+        document.getElementById("roomButton").onclick = createRoom;
+        document.getElementById("roomButton").innerText = "Create Room";
+        document.getElementById("roomButton").disabled = false;
+      } else if (res.type === "roomExists") { // If the room does exist, set the button to "joinRoom"
+        document.getElementById("roomButton").onclick = joinRoom;
+        document.getElementById("roomButton").innerText = "Join Room";
+        document.getElementById("roomButton").disabled = false;
+      }
+    } else { // If it's not valid, keep the button disabled:
+      document.getElementById("roomButton").disabled = true;
+    }
+  });
+}
 function createRoom() {
   document.getElementById("roomButton").disabled = true;
-  request({ command: "createRoom", room: document.getElementById("roomname").value, game: "qna", vip: document.getElementById("username").value }, function(res) {
-    console.log(res);
+  request({ command: "createRoom", room: document.getElementById("roomInput").value, game: "qna", vip: document.getElementById("usernameInput").value }, function(res) {
+    username = res.user;
+    roomname = res.room;
+    room = res.content;
+    hide("login");
+    stateChange("waiting");
   });
 }
 function joinRoom() {
   document.getElementById("roomButton").disabled = true;
-  request({ command: "joinRoom", room: document.getElementById("roomname").value, user: document.getElementById("username").value }, function(res) {
+  request({ command: "joinRoom", room: document.getElementById("roomInput").value, user: document.getElementById("usernameInput").value }, function(res) {
+    username = res.user;
+    roomname = res.room;
+    room = res.content;
+    if (res.type === "userJoined") {
+      hide("login");
+      stateChange("waiting");
+    } else { // User rejoined, change according to state
+      hide("login");
+      switch(room.state) { // TODO: implement all states + test
+        case "waiting":
+          stateChange("waiting");
+          break;
+        case "createQuestion":
+          stateChange("createQuestion");
+          break;
+      }
+    }
+  });
+}
+
+function checkQuestion() {
+  if (document.getElementById("questionInput").value !== "") {
+    document.getElementById("submitQuestionButton").disabled = "false";
+  } else {
+    document.getElementById("submitQuestionButton").disabled = "true";
+  }
+}
+
+function stateChange(newState) {
+  load[newState]();
+}
+var load = {
+  waiting: function() {
+    show("waiting");
+    document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
+    if (username === room.vip) {
+      show("startRoomForm");
+      if (room.users.length >= 3) {
+        document.getElementById("startRoomButton").disabled = false;
+      }
+    }
+  },
+  createQuestion: function() {
+    show("createQuestion");
+    document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions[username].length + 1}/2):`;
+  }
+};
+
+/* ====================================================================================================================================================================================================
+  # START GAME FUNCTION:
+*/
+function startRoom() {
+  request({ command: "startRoom", room: roomname }, function(res) {
     console.log(res);
   });
 }
+
+
+/* ====================================================================================================================================================================================================
+  # DOM HELPER FUNCTIONS:
+*/
+function show(id) {
+  document.getElementById(id).style.display = "block";
+}
+function hide(id) {
+  document.getElementById(id).style.display = "none";
+}
+
 
 /* ====================================================================================================================================================================================================
   # HELPER FUNCTIONS:
