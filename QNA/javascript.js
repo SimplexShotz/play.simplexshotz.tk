@@ -175,6 +175,7 @@ function joinRoom() {
       stateChange("waiting");
     } else { // User rejoined, change according to state
       hide("login");
+      document.getElementById("title").innerText = "[" + roomname + "] " + username;
       switch(room.state) { // TODO: implement all states + test
         case "waiting":
           stateChange("waiting");
