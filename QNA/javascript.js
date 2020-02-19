@@ -211,7 +211,7 @@ var load = {
   createQuestion: function() {
     hide("waiting");
     show("createQuestion");
-    document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions[username].length + 1}/2):`;
+    document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
   }
 };
 
