@@ -196,7 +196,7 @@ function stateChange(newState) {
 var load = {
   waiting: function() {
     localStorage.setItem("username", document.getElementById("usernameInput").value);
-    localStorage.setItem("roomname", document.getElementById("roomnameInput").value);
+    localStorage.setItem("roomname", document.getElementById("roomInput").value);
     hide("login");
     show("waiting");
     document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
