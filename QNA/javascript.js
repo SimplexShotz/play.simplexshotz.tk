@@ -138,6 +138,7 @@ function joinRoom() {
 }
 
 function checkQuestion() {
+  alert("oof");
   if (document.getElementById("questionInput").value !== "") {
     document.getElementById("submitQuestionButton").disabled = "false";
   } else {
@@ -150,18 +151,16 @@ function stateChange(newState) {
 }
 var load = {
   waiting: function() {
-    alert("STATE CHANGED TO WAITING");
     show("waiting");
     document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
     if (username === room.vip) {
-      show("startRoomForm");
+      show("startRoomButton");
       if (room.users.length >= 3) {
         document.getElementById("startRoomButton").disabled = false;
       }
     }
   },
   createQuestion: function() {
-    alert("STATE CHANGED TO CREATE_QUESTION");
     show("createQuestion");
     document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions[username].length + 1}/2):`;
   }
