@@ -90,6 +90,6 @@ a {
 
 
 
-#waiting, #startRoomForm, #createQuestion {
+#waiting, #startRoomButton, #createQuestion {
   display: none;
 }
