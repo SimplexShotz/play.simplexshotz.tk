@@ -150,6 +150,7 @@ function stateChange(newState) {
 }
 var load = {
   waiting: function() {
+    alert("STATE CHANGED TO WAITING");
     show("waiting");
     document.getElementById("playerCount").innerText = `Waiting for players... (${room.users.length})`;
     if (username === room.vip) {
@@ -160,6 +161,7 @@ var load = {
     }
   },
   createQuestion: function() {
+    alert("STATE CHANGED TO CREATE_QUESTION");
     show("createQuestion");
     document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions[username].length + 1}/2):`;
   }
