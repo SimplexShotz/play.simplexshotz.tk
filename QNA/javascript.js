@@ -121,7 +121,7 @@ window.addEventListener("load", function() {
     document.getElementById("usernameInput").value = localStorage.getItem("username");
   }
   if (localStorage.getItem("roomname")) {
-    document.getElementById("roomnameInput").value = localStorage.getItem("roomname");
+    document.getElementById("roomInput").value = localStorage.getItem("roomname");
   }
   document.getElementById("usernameInput").addEventListener("keyup", checkRoom);
   document.getElementById("roomInput").addEventListener("keyup", checkRoom);
