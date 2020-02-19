@@ -55,7 +55,7 @@ function getAjax(url, success, error) {
   xhr.onreadystatechange = function() {
     if (xhr.readyState > 3 && xhr.status === 200) {
       success(stringToObject(xhr.responseText));
-    } else if (xhr.readyState > 3) {
+    } else if (xhr.readyState > 3 && xhr.status >= 400) {
       alert("Error " + xhr.status + (errorCodes[xhr.status] ? " (" + errorCodes[xhr.status] + ")" : "") + ". That's all we know.");
     }
   };
