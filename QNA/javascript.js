@@ -15,7 +15,7 @@ function getAjax(url, success, error) {
     if (xhr.readyState > 3 && xhr.status === 200) {
       success(stringToObject(xhr.responseText));
     } else if (xhr.readyState > 3) {
-      alert("There was an error.");
+      alert("Error " + xhr.status + ". That's all we know.");
     }
   };
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
