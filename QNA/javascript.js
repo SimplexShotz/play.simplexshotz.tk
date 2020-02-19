@@ -126,6 +126,7 @@ window.addEventListener("load", function() {
   document.getElementById("usernameInput").addEventListener("keyup", checkRoom);
   document.getElementById("roomInput").addEventListener("keyup", checkRoom);
   document.getElementById("questionInput").addEventListener("keyup", checkQuestion);
+  checkRoom();
 });
 
 
