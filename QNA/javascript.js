@@ -91,16 +91,15 @@ var ref = {
 ref.rooms.on("value", function(data) {
   var d = data.val();
   if (roomname) {
-    console.log(d[roomname]);
-    if (d[roomname] === undefined) {
-      alert("THE ROOM HAS BEEN DELETED.");
-    } else {
+    if (d && d[roomname]) {
       stateChanged = false;
       if (d[roomname].state !== room.state) {
         stateChanged = true;
       }
       room = d[roomname];
       update();
+    } else {
+      alert("Room \"" + roomname + "\" no longer exists. Please refresh the page.");
     }
   }
 });
