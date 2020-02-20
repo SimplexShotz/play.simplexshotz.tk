@@ -217,6 +217,7 @@ var load = {
     document.getElementById("title").innerText = "QNA";
     hide("waiting");
     hide("createQuestion");
+    hide("startRoomButton");
     show("login");
     checkRoom();
   },
