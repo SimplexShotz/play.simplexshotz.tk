@@ -218,6 +218,7 @@ var load = {
     hide("waiting");
     hide("createQuestion");
     hide("startRoomButton");
+    document.getElementById("startRoomButton").disabled = true;
     show("login");
     checkRoom();
   },
