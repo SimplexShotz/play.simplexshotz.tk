@@ -148,22 +148,24 @@ window.addEventListener("load", function() {
 */
 function checkRoom() {
   document.getElementById("roomButton").disabled = true;
-  request({ command: "checkRoom", room: document.getElementById("roomInput").value }, function(res) {
-    // Make sure the room is valid:
-    if (document.getElementById("roomInput").value === res.content && document.getElementById("usernameInput").value !== "" && document.getElementById("roomInput").value !== "") {
-      if (res.type === "roomDoesNotExist") { // If the room doesn't exist, set the button to "createRoom"
-        document.getElementById("roomButton").onclick = createRoom;
-        document.getElementById("roomButton").innerText = "Create Room";
-        document.getElementById("roomButton").disabled = false;
-      } else if (res.type === "roomExists") { // If the room does exist, set the button to "joinRoom"
-        document.getElementById("roomButton").onclick = joinRoom;
-        document.getElementById("roomButton").innerText = "Join Room";
-        document.getElementById("roomButton").disabled = false;
+  if (document.getElementById("usernameInput").value !== "" && document.getElementById("roomInput").value !== "") {
+    request({ command: "checkRoom", room: document.getElementById("roomInput").value }, function(res) {
+      // Make sure the room is valid:
+      if (document.getElementById("roomInput").value === res.content) {
+        if (res.type === "roomDoesNotExist") { // If the room doesn't exist, set the button to "createRoom"
+          document.getElementById("roomButton").onclick = createRoom;
+          document.getElementById("roomButton").innerText = "Create Room";
+          document.getElementById("roomButton").disabled = false;
+        } else if (res.type === "roomExists") { // If the room does exist, set the button to "joinRoom"
+          document.getElementById("roomButton").onclick = joinRoom;
+          document.getElementById("roomButton").innerText = "Join Room";
+          document.getElementById("roomButton").disabled = false;
+        }
+      } else { // If it's not valid, keep the button disabled:
+        document.getElementById("roomButton").disabled = true;
       }
-    } else { // If it's not valid, keep the button disabled:
-      document.getElementById("roomButton").disabled = true;
-    }
-  });
+    });
+  }
 }
 function createRoom() {
   document.getElementById("roomButton").disabled = true;
