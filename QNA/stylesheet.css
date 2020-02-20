@@ -107,3 +107,10 @@ a {
     padding: 0px 25vw;
   }
 }
+
+@media (min-width: 2000px) { /* Fooking Massive */
+  #content {
+    width: calc(2000px - 50vw);
+    padding: 0px 25vw;
+  }
+}
