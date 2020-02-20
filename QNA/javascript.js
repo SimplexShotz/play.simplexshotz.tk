@@ -91,12 +91,16 @@ var ref = {
 ref.rooms.on("value", function(data) {
   var d = data.val();
   if (roomname) {
-    stateChanged = false;
-    if (d[roomname].state !== room.state) {
-      stateChanged = true;
+    if (d[roomname] === undefined) {
+      alert("THE ROOM HAS BEEN DELETED.");
+    } else {
+      stateChanged = false;
+      if (d[roomname].state !== room.state) {
+        stateChanged = true;
+      }
+      room = d[roomname];
+      update();
     }
-    room = d[roomname];
-    update();
   }
 });
 
