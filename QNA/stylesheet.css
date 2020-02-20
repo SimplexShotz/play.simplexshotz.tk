@@ -108,9 +108,9 @@ a {
   }
 }
 
-@media (min-width: 2000px) { /* Fooking Massive */
+@media (min-width: 1500px) { /* Fooking Massive */
   #content {
-    width: calc(2000px - 50vw);
-    padding: 0px 25vw;
+    width: 750px;
+    padding: 0px 375px;
   }
 }
