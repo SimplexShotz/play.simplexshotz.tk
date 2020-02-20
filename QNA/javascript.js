@@ -91,6 +91,7 @@ var ref = {
 ref.rooms.on("value", function(data) {
   var d = data.val();
   if (roomname) {
+    console.log(d[roomname]);
     if (d[roomname] === undefined) {
       alert("THE ROOM HAS BEEN DELETED.");
     } else {
