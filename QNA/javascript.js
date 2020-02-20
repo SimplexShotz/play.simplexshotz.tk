@@ -49,17 +49,20 @@ var errorCodes = {
   510: "Not Extended",
   511: "Network Authentication Required"
 };
+var timeout;
 function getAjax(url, success, error) {
   var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
   xhr.open("GET", url);
   xhr.onreadystatechange = function() {
     if (xhr.readyState > 3 && xhr.status === 200) {
+      clearTimeout(timeout);
       if (stringToObject(xhr.responseText).status === "error") {
         alert("Error " + stringToObject(xhr.responseText).type + ". That's all we know.");
       } else {
         success(stringToObject(xhr.responseText));
       }
     } else if (xhr.readyState > 3 && xhr.status >= 400) {
+      clearTimeout(timeout);
       alert("Error " + xhr.status + (errorCodes[xhr.status] ? " (" + errorCodes[xhr.status] + ")" : "") + ". That's all we know.");
     }
   };
@@ -69,6 +72,10 @@ function getAjax(url, success, error) {
 }
 function request(options, callback) {
   getAjax("https://cors-anywhere.herokuapp.com/https://reconnect.simplexshotz.repl.co/?" + objectToString(options), callback);
+  clearTimeout(timeout);
+  timeout = setTimeout(function() {
+    alert("The request is taking a while. Please check your internet connection.");
+  }, 5000);
 }
 // Firebase Setup:
 var firebaseConfig = {
@@ -118,9 +125,46 @@ function update() {
       }
       break;
     case "createQuestion":
-      document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
+      if (room.saved.questions && room.saved.questions[username].length < 2 || room.saved.questions === undefined) { // user has more questions to input
+        document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
+        if (stateChanged) {
+          stateChange("createQuestion");
+        }
+      } else { // user has inputed all questions
+        var playersDone = 0;
+        for (var i in room.saved.questions) {
+          if (room.saved.questions[i].length >= 2) {
+            playersDone++;
+          }
+        }
+        document.getElementById("waitCount").innerText = `Waiting for other players to submit... (${playersDone}/${room.users.length})`;
+        stateChange("waitingForOthers");
+      }
+      break;
+    case "createAnswer":
+      if (room.saved.answering && room.saved.answering[username] && room.saved.answering[username].length !== 0) { // user has more questions to answer
+        document.getElementById("answerCount").innerText = `Answer the question (${(4 - room.saved.answering[username].length) + 1}/4):`;
+        document.getElementById("questionToAnswer").innerText = room.saved.questions[room.saved.answering[username][0].user][room.saved.answering[username][0].question].question;
+        if (stateChanged) {
+          stateChange("createAnswer");
+        }
+      } else { // user has answered all questions
+        var playersDone = 0;
+        var playersCounted = 0;
+        for (var i in room.saved.answering) {
+          if (room.saved.answering[i].length === 0) {
+            playersDone++;
+          }
+          playersCounted++;
+        }
+        playersDone += room.users.length - playersCounted;
+        document.getElementById("waitCount").innerText = `Waiting for other players to submit... (${playersDone}/${room.users.length})`;
+        stateChange("waitingForOthers");
+      }
+      break;
+    case "pickAnswer":
       if (stateChanged) {
-        stateChange("createQuestion");
+        stateChange("pickAnswer");
       }
       break;
   }
@@ -131,15 +175,21 @@ function update() {
   # EVENT LISTENERS:
 */
 window.addEventListener("load", function() {
+  // Load previous username and roomname from local storage
   if (localStorage.getItem("username")) {
     document.getElementById("usernameInput").value = localStorage.getItem("username");
   }
   if (localStorage.getItem("roomname")) {
     document.getElementById("roomInput").value = localStorage.getItem("roomname");
   }
+
+  // Room checking:
   document.getElementById("usernameInput").addEventListener("keyup", checkRoom);
   document.getElementById("roomInput").addEventListener("keyup", checkRoom);
+
+  // Question/Answer checking:
   document.getElementById("questionInput").addEventListener("keyup", checkQuestion);
+  document.getElementById("answerInput").addEventListener("keyup", checkAnswer);
   checkRoom();
 });
 
@@ -190,23 +240,22 @@ function joinRoom() {
     } else { // User rejoined, change according to state
       hide("login");
       document.getElementById("title").innerText = "[" + roomname + "] " + username;
-      switch(room.state) { // TODO: implement all states + test
-        case "waiting":
-          stateChange("waiting");
-          break;
-        case "createQuestion":
-          stateChange("createQuestion");
-          break;
-      }
+      stateChange(room.state);
+      update(); // TODO: test
     }
   });
 }
 
 function checkQuestion() {
-  if (document.getElementById("questionInput").value !== "") {
+  document.getElementById("submitQuestionButton").disabled = true;
+  if (document.getElementById("questionInput").value !== "" || room.saved.questions[username].length >= 2) {
     document.getElementById("submitQuestionButton").disabled = false;
-  } else {
-    document.getElementById("submitQuestionButton").disabled = true;
+  }
+}
+function checkAnswer() {
+  document.getElementById("submitAnswerButton").disabled = true;
+  if (document.getElementById("answerInput").value !== "") { // TODO
+    document.getElementById("submitAnswerButton").disabled = false;
   }
 }
 
@@ -217,8 +266,11 @@ var load = {
   login: function() {
     document.getElementById("title").innerText = "QNA";
     hide("waiting");
-    hide("createQuestion");
     hide("startRoomButton");
+    hide("createQuestion");
+    hide("createAnswer");
+    hide("pickAnswer");
+    hide("waitingForOthers");
     document.getElementById("startRoomButton").disabled = true;
     show("login");
     checkRoom();
@@ -241,8 +293,30 @@ var load = {
     hide("waiting");
     show("createQuestion");
     document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
+  },
+  createAnswer: function() {
+    hide("createQuestion");
+    hide("waitingForOthers");
+    show("createAnswer");
+    if (room.saved.answering[username] && room.saved.answering[username][0]) {
+      //                                                                         (4 total questions - questions left) + 1
+      document.getElementById("answerCount").innerText = `Answer the question (${(4 - room.saved.answering[username].length) + 1}/4):`;
+      //                                                      room.saved.questions[                 user                 ][             question number             ] .question
+      document.getElementById("questionToAnswer").innerText = room.saved.questions[room.saved.answering[username][0].user][room.saved.answering[username][0].question].question;
+    }
+  },
+  pickAnswer: function() {
+    hide("createAnswer");
+    hide("waitingForOthers");
+    show("pickAnswer");
+  },
+  waitingForOthers: function() {
+    hide("createQuestion");
+    hide("createAnswer");
+    show("waitingForOthers");
   }
 };
+
 
 /* ====================================================================================================================================================================================================
   # START GAME FUNCTION:
@@ -261,7 +335,12 @@ function submitQuestion() {
   document.getElementById("submitQuestionButton").disabled = true;
   request({ command: "submit", room: roomname, user: username, input: document.getElementById("questionInput").value }, function(res) {
     document.getElementById("questionInput").value = "";
-    document.getElementById("submitQuestionButton").disabled = false;
+  });
+}
+function submitAnswer() {
+  document.getElementById("submitAnswerButton").disabled = true;
+  request({ command: "submit", room: roomname, user: username, input: document.getElementById("answerInput").value }, function(res) {
+    document.getElementById("answerInput").value = "";
   });
 }
 
@@ -299,4 +378,14 @@ function objectToString(obj) {
   // Cut off the last "&":
   str = str.substring(0, str.length - 1);
   return str;
+}
+
+
+/* ====================================================================================================================================================================================================
+  # FUN FUNCTION:
+*/
+var funCount = 0;
+function fun() {
+  funCount++;
+  document.getElementById("funButton").innerText = funCount;
 }

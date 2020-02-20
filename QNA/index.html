@@ -28,11 +28,33 @@
           <button id="startRoomButton" onclick="startRoom()" disabled="true">Start Game</button>
         </div>
       </div>
+      <div id="waitingForOthers">
+        <div class="form">
+          <h1 id="waitCount">Waiting for other players to submit...</h1>
+          <button id="funButton" onclick="fun()">Click me!</button>
+        </div>
+      </div>
       <div id="createQuestion">
         <div class="form">
           <h1 id="questionCount">Enter a Question:</h1>
           <input id="questionInput" placeholder="Question">
           <button id="submitQuestionButton" onclick="submitQuestion()" disabled="true">Submit</button>
+        </div>
+      </div>
+      <div id="createAnswer">
+        <div class="form">
+          <h1 id="answerCount">Answer the question:</h1>
+          <p id="questionToAnswer">[Question]</p>
+          <input id="answerInput" placeholder="Answer">
+          <button id="submitAnswerButton" onclick="submitAnswer()" disabled="true">Submit</button>
+        </div>
+      </div>
+      <div id="pickAnswer">
+        <div class="form">
+          <h1 id="">Pick your favorite answer to the question:</h1>
+          <p id="">[THIS DOES NOT WORK YET!!!]</p>
+          <input id="" placeholder="THIS DOES NOT WORK!!!">
+          <button id="" onclick="" disabled="true">THIS DOES NOT WORK EITHER!!!</button>
         </div>
       </div>
     </div>

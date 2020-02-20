@@ -90,7 +90,7 @@ a {
 
 
 
-#waiting, #startRoomButton, #createQuestion {
+#waiting, #startRoomButton, #createQuestion, #waitingForOthers, #createAnswer, #pickAnswer {
   display: none;
 }
 
@@ -111,6 +111,6 @@ a {
 @media (min-width: 2500px) { /* Fooking Massive */
   #content {
     width: 1250px;
-    padding: 0px 625px;
+    padding: 0px calc(50vw - 625px);
   }
 }
