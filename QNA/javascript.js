@@ -168,6 +168,7 @@ function checkRoom() {
 function createRoom() {
   document.getElementById("roomButton").disabled = true;
   request({ command: "createRoom", room: document.getElementById("roomInput").value, game: "qna", vip: document.getElementById("usernameInput").value }, function(res) {
+    console.log(res);
     username = res.user;
     roomname = res.room;
     room = res.content;
@@ -177,6 +178,7 @@ function createRoom() {
 function joinRoom() {
   document.getElementById("roomButton").disabled = true;
   request({ command: "joinRoom", room: document.getElementById("roomInput").value, user: document.getElementById("usernameInput").value }, function(res) {
+    console.log(res);
     username = res.user;
     roomname = res.room;
     room = res.content;
@@ -210,6 +212,7 @@ function stateChange(newState) {
 }
 var load = {
   login: function() {
+    document.getElementById("title").innerText = "QNA";
     hide("waiting");
     hide("createQuestion");
     show("login");
