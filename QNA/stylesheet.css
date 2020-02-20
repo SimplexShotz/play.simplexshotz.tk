@@ -27,8 +27,8 @@ a {
 }
 
 #content {
-  width: 50vw;
-  padding: 0px 25vw;
+  width: 90vw;
+  padding: 0px 5vw;
 }
 
 .form {
@@ -92,4 +92,18 @@ a {
 
 #waiting, #startRoomButton, #createQuestion {
   display: none;
+}
+
+@media (min-width: 768px) { /* Tablet+ */
+  #content {
+    width: 80vw;
+    padding: 0px 10vw;
+  }
+}
+
+@media (min-width: 992px) { /* Desktop+ */
+  #content {
+    width: 50vw;
+    padding: 0px 25vw;
+  }
 }
