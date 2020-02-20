@@ -99,9 +99,14 @@ ref.rooms.on("value", function(data) {
       room = d[roomname];
       update();
     } else {
-      alert("Room \"" + roomname + "\" no longer exists. Please refresh the page.");
+      alert("Room \"" + roomname + "\" no longer exists. You have been kicked from your room.");
+      stateChange("login");
+      username = "";
+      roomname = "";
+      room = {};
     }
   }
+  checkRoom();
 });
 
 function update() {
@@ -204,6 +209,12 @@ function stateChange(newState) {
   load[newState]();
 }
 var load = {
+  login: function() {
+    hide("waiting");
+    hide("createQuestion");
+    show("login");
+    checkRoom();
+  },
   waiting: function() {
     document.getElementById("title").innerText = "[" + roomname + "] " + username;
     localStorage.setItem("username", username);
