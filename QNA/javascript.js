@@ -118,6 +118,7 @@ function update() {
       }
       break;
     case "createQuestion":
+      document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
       if (stateChanged) {
         stateChange("createQuestion");
       }
@@ -249,6 +250,18 @@ var load = {
 function startRoom() {
   request({ command: "startRoom", room: roomname }, function(res) {
     console.log(res);
+  });
+}
+
+
+/* ====================================================================================================================================================================================================
+  # SUBMIT FUNCTIONS:
+*/
+function submitQuestion() {
+  document.getElementById("submitQuestionButton").disabled = true;
+  request({ command: "submit", room: roomname, user: username, input: document.getElementById("questionInput").value }, function(res) {
+    document.getElementById("questionInput").value = "";
+    document.getElementById("submitQuestionButton").disabled = false;
   });
 }
 
