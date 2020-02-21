@@ -163,8 +163,29 @@ function update() {
       }
       break;
     case "pickAnswer":
-      if (stateChanged) {
-        stateChange("pickAnswer");
+      // Figure out how many answers the user has left to pick:
+      var answersToPick = 0;
+      var answerPicked = -1;
+      for (var i = 0; i < room.saved.questions[username].length; i++) {
+        if (room.saved.questions[username][i].picked === -1) {
+          answersToPick++;
+          if (answerPicked === -1) {
+            answerPicked = i;
+          }
+        }
+      }
+      if (answersToPick !== 0) { // user has more answers to pick
+        document.getElementById("pickAnswerCount").innerText = `Pick your favorite answer to your question (${(2 - answersToPick) + 1}/2):`;
+        document.getElementById("questionToPick").innerText = room.saved.questions[username][answerPicked].question;
+        document.getElementById("answerList").innerHTML = "";
+        for (var i = 0; i < room.saved.questions[username][answerPicked].answers.length; i++) {
+          document.getElementById("answerList").innerHTML += `<button class="pickAnswerButton" onclick="pick(${i})">${room.saved.questions[username][answerPicked].answers[i]}</button>`;
+        }
+        if (stateChanged) {
+          stateChange("pickAnswer");
+        }
+      } else { // user has picked all answers
+        alert("all answers picked"); // TODO
       }
       break;
   }
@@ -313,6 +334,7 @@ var load = {
   waitingForOthers: function() {
     hide("createQuestion");
     hide("createAnswer");
+    hide("pickAnswer");
     show("waitingForOthers");
   }
 };
@@ -341,6 +363,14 @@ function submitAnswer() {
   document.getElementById("submitAnswerButton").disabled = true;
   request({ command: "submit", room: roomname, user: username, input: document.getElementById("answerInput").value }, function(res) {
     document.getElementById("answerInput").value = "";
+  });
+}
+function pick(i) {
+  for (var b = 0; b < document.getElementsByClassName("pickAnswerButton").length; b++) {
+    document.getElementsByClassName("pickAnswerButton")[b].disabled = true;
+  }
+  request({ command: "submit", room: roomname, user: username, input: i }, function(res) {
+    console.log(res);
   });
 }
 
