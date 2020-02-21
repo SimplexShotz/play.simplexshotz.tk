@@ -8,47 +8,47 @@ var room = {};
   # SETUP:
 */
 // AJAX Setup:
-var errorCodes = {
-  400: "Bad Request",
-  401: "Unauthorized",
-  402: "Payment Required",
-  403: "Forbidden",
-  404: "Not Found",
-  405: "Method Not Allowed",
-  406: "Not Acceptable",
-  407: "Proxy Authentication Required",
-  408: "Request Timeout",
-  409: "Conflict",
-  410: "Gone",
-  411: "Length Required",
-  412: "Precondition Failed",
-  413: "Payload Too Large",
-  414: "URI Too Long",
-  415: "Unsupported Media Type",
-  416: "Range Not Satisfiable",
-  417: "Expectation Failed",
-  421: "Misdirected Request",
-  422: "Unprocessable Entity",
-  423: "Locked",
-  424: "Failed Dependency",
-  425: "Too Early",
-  426: "Ugrade Required",
-  428: "Precondition Required",
-  429: "Too Many Requests",
-  431: "Request Header Fields Too Large",
-  451: "Unavailable For Legal Reasons",
-  500: "Internal Server Error",
-  501: "Not Implemented",
-  502: "Bad Gateway",
-  503: "Service Unavailable",
-  504: "Gateway Timeout",
-  505: "HTTP Version Not Supported",
-  506: "Variant Also Negotiates",
-  507: "Insufficient Storage",
-  508: "Loop Detected",
-  510: "Not Extended",
-  511: "Network Authentication Required"
-};
+// var errorCodes = {
+//   400: "Bad Request",
+//   401: "Unauthorized",
+//   402: "Payment Required",
+//   403: "Forbidden",
+//   404: "Not Found",
+//   405: "Method Not Allowed",
+//   406: "Not Acceptable",
+//   407: "Proxy Authentication Required",
+//   408: "Request Timeout",
+//   409: "Conflict",
+//   410: "Gone",
+//   411: "Length Required",
+//   412: "Precondition Failed",
+//   413: "Payload Too Large",
+//   414: "URI Too Long",
+//   415: "Unsupported Media Type",
+//   416: "Range Not Satisfiable",
+//   417: "Expectation Failed",
+//   421: "Misdirected Request",
+//   422: "Unprocessable Entity",
+//   423: "Locked",
+//   424: "Failed Dependency",
+//   425: "Too Early",
+//   426: "Ugrade Required",
+//   428: "Precondition Required",
+//   429: "Too Many Requests",
+//   431: "Request Header Fields Too Large",
+//   451: "Unavailable For Legal Reasons",
+//   500: "Internal Server Error",
+//   501: "Not Implemented",
+//   502: "Bad Gateway",
+//   503: "Service Unavailable",
+//   504: "Gateway Timeout",
+//   505: "HTTP Version Not Supported",
+//   506: "Variant Also Negotiates",
+//   507: "Insufficient Storage",
+//   508: "Loop Detected",
+//   510: "Not Extended",
+//   511: "Network Authentication Required"
+// };
 var timeout;
 function getAjax(url, success, error) {
   var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -57,14 +57,14 @@ function getAjax(url, success, error) {
     if (xhr.readyState > 3 && xhr.status === 200) {
       clearTimeout(timeout);
       if (stringToObject(xhr.responseText).status === "error") {
-        alert("Error " + stringToObject(xhr.responseText).type + ". That's all we know.");
+        alert(`Error (${stringToObject(xhr.responseText).type}).\n\nContent:\n${stringToObject(xhr.responseText).content}\n\nThat's all we know.`);
       } else {
         success(stringToObject(xhr.responseText));
       }
     } else if (xhr.readyState > 3 && xhr.status >= 400) {
       console.log(xhr); // TODO remove
       clearTimeout(timeout);
-      alert("Error " + xhr.status + (errorCodes[xhr.status] ? " (" + errorCodes[xhr.status] + ")" : "") + ". That's all we know.");
+      alert(`Error ${xhr.status} (${xhr.statusText}).\n\nResponse:\n${xhr.responseText}\n\nThat's all we know.`);
     }
   };
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
