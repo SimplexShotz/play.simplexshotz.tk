@@ -341,9 +341,10 @@ var load = {
 
 
 /* ====================================================================================================================================================================================================
-  # START GAME FUNCTION:
+  # START ROOM FUNCTION:
 */
 function startRoom() {
+  document.getElementById("startRoomButton").disabled = true;
   request({ command: "startRoom", room: roomname }, function(res) {
     console.log(res);
   });
