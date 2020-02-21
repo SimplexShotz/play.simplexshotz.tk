@@ -112,8 +112,9 @@ ref.rooms.on("value", function(data) {
       roomname = "";
       room = {};
     }
+  } else {
+    checkRoom();
   }
-  checkRoom();
 });
 
 function update() {
