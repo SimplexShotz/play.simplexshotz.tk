@@ -62,6 +62,7 @@ function getAjax(url, success, error) {
         success(stringToObject(xhr.responseText));
       }
     } else if (xhr.readyState > 3 && xhr.status >= 400) {
+      console.log(xhr); // TODO remove
       clearTimeout(timeout);
       alert("Error " + xhr.status + (errorCodes[xhr.status] ? " (" + errorCodes[xhr.status] + ")" : "") + ". That's all we know.");
     }
