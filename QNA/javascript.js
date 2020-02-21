@@ -179,7 +179,7 @@ function update() {
         document.getElementById("questionToPick").innerText = room.saved.questions[username][answerPicked].question;
         document.getElementById("answerList").innerHTML = "";
         for (var i = 0; i < room.saved.questions[username][answerPicked].answers.length; i++) {
-          document.getElementById("answerList").innerHTML += `<button class="pickAnswerButton" onclick="pick(${i})">${room.saved.questions[username][answerPicked].answers[i]}</button>`;
+          document.getElementById("answerList").innerHTML += `<button class="pickAnswerButton" onclick="pick(${i})">${room.saved.questions[username][answerPicked].answers[i].answer}</button>`;
         }
         if (stateChanged) {
           stateChange("pickAnswer");
