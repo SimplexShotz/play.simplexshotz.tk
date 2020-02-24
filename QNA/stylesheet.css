@@ -115,7 +115,7 @@ a {
   padding: 10px;
 }
 
-#waiting, #startRoomButton, #createQuestion, #waitingForOthers, #createAnswer, #pickAnswer {
+#waiting, #startRoomButton, #createQuestion, #waitingForOthers, #createAnswer, #pickAnswer, #showScores {
   display: none;
 }
 
@@ -133,7 +133,7 @@ a {
   }
 }
 
-@media (min-width: 2500px) { /* Desktop++ */
+@media (min-width: 2500px) { /* Fooking Massive */
   #content {
     width: 1250px;
     padding: 0px calc(50vw - 625px);
