@@ -34,7 +34,7 @@ function request(options, callback) {
   getAjax("https://reproxy.simplexshotz.repl.co/reconnect.simplexshotz.repl.co/?" + objectToString(options), callback);
   clearTimeout(timeout);
   timeout = setTimeout(function() {
-    alert("The request is taking a while. Please check your internet connection.");
+    alert("The request is taking a while. Please check your internet connection. If the issue persists, please contact me at \"brancy280@gmail.com\".");
   }, 5000);
 }
 // Firebase Setup:
@@ -77,6 +77,8 @@ ref.rooms.on("value", function(data) {
   }
 });
 
+var countdownInterval;
+var countdownTo;
 function update() {
   switch(room.state) {
     case "waiting":
@@ -90,6 +92,9 @@ function update() {
         document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
         if (stateChanged) {
           stateChange("createQuestion");
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+          }
         }
       } else { // user has inputed all questions
         var playersDone = 0;
@@ -168,7 +173,7 @@ function update() {
       if (stateChanged) {
         stateChange("showScores");
       }
-      document.getElementById("scoresTable").innerHTML = "<tr><th>User</th> <th>Score</th></tr>";
+      var scoresTableHTML = "<tr><th>User</th> <th>Score</th></tr>";
       var toSort = [];
       for (var i = 0; i < room.users.length; i++) {
         toSort.push({
@@ -178,8 +183,13 @@ function update() {
       }
       quicksort(toSort, 0, toSort.length - 1, "score");
       for (var i = 0; i < toSort.length; i++) {
-        document.getElementById("scoresTable").innerHTML += `<tr><td>${toSort[i].user}</td> <td>${toSort[i].score}</td></tr>`;
+        scoresTableHTML += `<tr><td>${toSort[i].user}</td> <td>${toSort[i].score}</td></tr>`;
       }
+      document.getElementById("scoresTable").innerHTML = scoresTableHTML;
+      countdownTo = room.updated + (10 * 1000);
+      countdownInterval = setInterval(function() {
+        document.getElementById("showScoresCountdown").innerText = Math.max(Math.ceil(countdownTo - (new Date().getTime())), 0);
+      }, 200);
       break;
   }
 }
@@ -284,6 +294,7 @@ var load = {
     hide("createQuestion");
     hide("createAnswer");
     hide("pickAnswer");
+    hide("showScores");
     hide("waitingForOthers");
     document.getElementById("startRoomButton").disabled = true;
     show("login");
@@ -305,6 +316,7 @@ var load = {
   },
   createQuestion: function() {
     hide("waiting");
+    hide("showScores");
     show("createQuestion");
     document.getElementById("questionCount").innerText = `Enter a Question (${room.saved.questions ? room.saved.questions[username].length + 1 : 1}/2):`;
   },
