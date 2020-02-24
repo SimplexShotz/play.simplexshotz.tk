@@ -188,8 +188,8 @@ function update() {
       document.getElementById("scoresTable").innerHTML = scoresTableHTML;
       countdownTo = room.updated + (10 * 1000);
       countdownInterval = setInterval(function() {
-        document.getElementById("showScoresCountdown").innerText = Math.max(Math.ceil(countdownTo - (new Date().getTime())), 0);
-      }, 200);
+        document.getElementById("showScoresCountdown").innerText = Math.max(Math.ceil((countdownTo - (new Date().getTime())) / 1000), 0);
+      }, 100);
       break;
   }
 }
