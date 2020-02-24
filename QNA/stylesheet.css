@@ -5,6 +5,7 @@ body {
   font-family: "Nunito";
   font-weight: 300;
   color: rgb(50, 50, 50);
+  background-color: rgb(255, 255, 255);
 }
 
 h1 {
@@ -89,16 +90,29 @@ a {
   font-size: 16pt;
 }
 .table table {
-  display: block;
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
-  width: calc(100% - 20px - 6px);
-  padding: 10px;
+  width: 100%;
   margin-bottom: 10px;
-  border: 3px solid rgb(200, 200, 200);
   border-radius: 10px 10px 0px 10px;
   font-size: 16pt;
+  border-spacing: 0;
   transition: all 0.5s;
+}
+.table table tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+.table table tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+.table table tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.table table, .table th, .table td {
+  border: 1.5px solid rgb(200, 200, 200);
+}
+.table th, .table td {
+  padding: 10px;
 }
 
 #waiting, #startRoomButton, #createQuestion, #waitingForOthers, #createAnswer, #pickAnswer {
@@ -119,7 +133,7 @@ a {
   }
 }
 
-@media (min-width: 2500px) { /* Fooking Massive */
+@media (min-width: 2500px) { /* Desktop++ */
   #content {
     width: 1250px;
     padding: 0px calc(50vw - 625px);
