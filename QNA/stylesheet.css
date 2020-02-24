@@ -31,7 +31,7 @@ a {
   padding: 0px 5vw;
 }
 
-.form {
+.form, .table {
   padding: 50px;
   text-align: center;
 }
@@ -88,8 +88,18 @@ a {
   color: rgb(200, 200, 200);
   font-size: 16pt;
 }
-
-
+.table table {
+  display: block;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  width: calc(100% - 20px - 6px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 3px solid rgb(200, 200, 200);
+  border-radius: 10px 10px 0px 10px;
+  font-size: 16pt;
+  transition: all 0.5s;
+}
 
 #waiting, #startRoomButton, #createQuestion, #waitingForOthers, #createAnswer, #pickAnswer {
   display: none;
