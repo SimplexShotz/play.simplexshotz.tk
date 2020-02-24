@@ -146,7 +146,39 @@ function update() {
           stateChange("pickAnswer");
         }
       } else { // user has picked all answers
-        alert("all answers picked"); // TODO
+        var playersDone = 0;
+        var playerDone = true;
+        for (var i in room.saved.questions) {
+          playerDone = true;
+          for (var j = 0; j < room.saved.questions[i].length; j++) {
+            if (room.saved.questions[i][j].picked === -1) {
+              playerDone = false;
+              break;
+            }
+          }
+          if (playerDone) {
+            playersDone++;
+          }
+        }
+        document.getElementById("waitCount").innerText = `Waiting for other players to submit... (${playersDone}/${room.users.length})`;
+        stateChange("waitingForOthers");
+      }
+      break;
+    case "showScores":
+      if (stateChanged) {
+        stateChange("showScores");
+      }
+      document.getElementById("scoresTable").innerHTML = "<tr><th>User</th> <th>Score</th></tr>";
+      var toSort = [];
+      for (var i = 0; i < room.users.length; i++) {
+        toSort.push({
+          user: room.users[i],
+          score: room.saved.scores[room.users[i]]
+        });
+      }
+      quicksort(toSort, 0, toSort.length - 1, "score");
+      for (var i = 0; i < toSort.length; i++) {
+        document.getElementById("scoresTable").innerHTML += `<tr><td>${toSort[i].user}</td> <td>${toSort[i].score}</td></tr>`;
       }
       break;
   }
@@ -292,6 +324,11 @@ var load = {
     hide("waitingForOthers");
     show("pickAnswer");
   },
+  showScores: function() {
+    hide("pickAnswer");
+    hide("waitingForOthers");
+    show("showScores");
+  },
   waitingForOthers: function() {
     hide("createQuestion");
     hide("createAnswer");
@@ -380,4 +417,34 @@ var funCount = 0;
 function fun() {
   funCount++;
   document.getElementById("funButton").innerText = funCount;
+}
+
+
+/* ====================================================================================================================================================================================================
+  # QUICKSORT FUNCTIONS:
+*/
+function partition(arr, lo, hi, by) {
+  var pivot = (by ? arr[hi][by] : arr[hi]);
+  var i = lo;
+  for (var j = lo; j < hi; j++) {
+    if ((by ? arr[j][by] : arr[j]) > pivot) {
+      if (i !== j) {
+        var t = arr[j];
+        arr[j] = arr[i];
+        arr[i] = t;
+      }
+      i++;
+    }
+  }
+  var t = arr[hi];
+  arr[hi] = arr[i];
+  arr[i] = t;
+  return i;
+}
+function quicksort(arr, lo, hi, by) {
+  if (lo < hi) {
+    var p = partition(arr, lo, hi, by);
+    quicksort(arr, lo, p - 1, by);
+    quicksort(arr, p + 1, hi, by);
+  }
 }
