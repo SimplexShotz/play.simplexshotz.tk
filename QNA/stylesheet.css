@@ -60,6 +60,7 @@ a {
   border-radius: 10px 10px 0px 10px;
   font-size: 16pt;
   margin: auto;
+  margin-bottom: 10px;
   transition: all 0.5s;
 }
 .form button:hover {
